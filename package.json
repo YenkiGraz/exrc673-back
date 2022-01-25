@@ -1,0 +1,24 @@
+{
+  "name": "exrc-673-back",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^14.2.0",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "mongoose": "^6.1.7",
+    "mongoose-morgan": "^1.0.17",
+    "morgan": "^1.10.0",
+    "node-geocoder": "^3.28.0",
+    "winston": "^3.4.0",
+    "winston-mongodb": "^5.0.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
