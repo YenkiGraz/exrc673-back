@@ -7,7 +7,7 @@ const logger = require("./src/logger/functionLogger");
 const httpLogger = require('./src/logger/httpLogger')
 
 const app = express();
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 8080
 
 async function appGenerator(app) {
     app.use(cors()); // Init cors
