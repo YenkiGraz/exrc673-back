@@ -17,10 +17,10 @@ const getFromCache = (reqTime) => {
     cacheKeys.forEach(key => {
         cacheVal = JSON.parse(cache.get(key))
 
-        let distanceTimeInMs = (date - cache.get(key).lastEmptying);
+        let distanceTimeInMs = new Date(cacheVal.lastEmptying).getTime() - date.getTime();
         let distanceTimeInMinute = msToMinutes(distanceTimeInMs);
 
-        if (distanceTimeInMinute < reqTime) {
+        if (distanceTimeInMinute <= reqTime) {
             listOfContainers.push(cache.get(key));
         }
     })
@@ -29,6 +29,8 @@ const getFromCache = (reqTime) => {
 }
 
 const msToMinutes = (ms) => {
+    if (ms <= 0) return 0;
+
     let second = ms / 1000;
     let minutes = second / 60
 
@@ -37,5 +39,7 @@ const msToMinutes = (ms) => {
 
 module.exports = {
     getFromCache,
-    addToCache
+    addToCache,
+    msToMinutes,
+    cache
 }

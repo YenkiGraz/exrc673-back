@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -20,6 +20,7 @@
     "winston-mongodb": "^5.0.7"
   },
   "devDependencies": {
+    "jest": "^27.4.7",
     "nodemon": "^2.0.15"
   }
 }
