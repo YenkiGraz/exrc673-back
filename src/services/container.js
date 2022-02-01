@@ -1,7 +1,9 @@
-const Container = require("../models/Container");
+const Container = require("../models/ContainerSchema");
 const {addToCache} = require("../cache/cache");
 
 const msToMinutes = (ms) => {
+    if (ms <= 0) return 0;
+
     let second = ms / 1000;
     let minutes = second / 60
 
@@ -97,5 +99,6 @@ module.exports = {
     createNewContainer,
     editContainerLocation,
     editContainerLastEmptying,
-    deleteContainer
+    deleteContainer,
+    msToMinutes
 }
