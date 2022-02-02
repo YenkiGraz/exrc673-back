@@ -9,6 +9,7 @@ describe('cache', () => {
         test('Did cache.set() called', () => {
             const cacheSpy = jest.spyOn(cache, 'set')
             const container = {
+                _id: '0',
                 color: 'red',
                 containerType: 'Bottle Recycle',
                 location: {
@@ -22,7 +23,7 @@ describe('cache', () => {
 
             addToCache(container)
 
-            expect(cacheSpy).toHaveBeenCalledWith('1', JSON.stringify(container), undefined)
+            expect(cacheSpy).toHaveBeenCalledWith(container._id, JSON.stringify(container), undefined)
         })
     })
 

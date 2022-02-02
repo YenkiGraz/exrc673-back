@@ -1,4 +1,5 @@
 const NodeGeocoder = require('node-geocoder');
+require('dotenv').config()
 
 const options = {
     provider: 'google',
@@ -7,25 +8,41 @@ const options = {
 
 const geocoder = NodeGeocoder(options);
 
-const geocoderMiddleware = async (req, res, next) => {
-    let geoObj;
-
-    if (!req.body.address && req.body.location !== undefined) {
-        geoObj = await geocoder.reverse({lat: req.body.location.latitude, lon: req.body.location.longitude});
-
-        req.body.location.address = geoObj[0].formattedAddress
-        req.body.location.coordinates = [geoObj[0].latitude, geoObj[0].longitude]
+const initAddress = async (body) => {
+    if (body.address !== undefined && body.location !== undefined) {
+        return
     }
 
-    if (!req.body.location && req.body.address !== undefined) {
-        geoObj = await geocoder.geocode(req.body.address);
-        req.body.location = {
-            address: geoObj[0].formattedAddress,
-            coordinates: [geoObj[0].latitude, geoObj[0].longitude]
-        }
+    if (!body.address && body.location !== undefined) {
+        await getAddressByLocation(body.location);
+        return
     }
 
-    next()
+    if (body.location === undefined && body.address === undefined) {
+        throw new Error('{code: 400, error: "Wrong properties"}')
+    }
 }
 
-module.exports = geocoderMiddleware
+const getAddressByLocation = async (location) => {
+    const geoObj = await geocoder.reverse({lat: location.latitude, lon: location.longitude});
+
+    location.address = geoObj[0].formattedAddress;
+    location.coordinates = [geoObj[0].latitude, geoObj[0].longitude];
+}
+
+const geocoderMiddleware = async (req, res, next) => {
+    try {
+        await initAddress(req.body)
+        console.log(req.body);
+        next()
+    } catch (err) {
+        next(err)
+    }
+}
+
+module.exports = {
+    geocoderMiddleware,
+    initAddress,
+    getAddressByLocation,
+    geocoder
+}
