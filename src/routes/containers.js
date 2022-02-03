@@ -1,8 +1,8 @@
 const express = require('express');
-const geocoderMiddleware = require("../middlewares/geocoderMiddleware");
 const router = express.Router();
 const logger = require("../logger/functionLogger");
 const {getFromCache} = require("../cache/cache");
+const {geocoderMiddleware} = require("../middlewares/geocoderMiddleware");
 const {
     getContainersByLastEmptying,
     getContainersByAddress,
@@ -12,6 +12,7 @@ const {
     editContainerLastEmptying,
     deleteContainer
 } = require("../services/container");
+const ApiError = require("../error/ApiError");
 
 router.get('/', async (req, res, next) => {
     try {
@@ -24,7 +25,7 @@ router.get('/', async (req, res, next) => {
             data: containers
         })
     } catch (e) {
-        logger.error(new Error(`Failed to return all containers: ${e}`));
+        next(new ApiError.InternalError(`Failed to return all containers: ${e}`))
     }
 });
 
@@ -35,7 +36,7 @@ router.post('/', geocoderMiddleware, async (req, res, next) => {
 
         res.status(200).send(container)
     } catch (e) {
-        logger.error(new Error(`Failed to create a new container: ${e}`));
+        next(new ApiError.InternalError(`Failed to create a new container: ${e}`))
     }
 });
 
@@ -51,7 +52,7 @@ router.get('/location/:lat/:lng/:radius', geocoderMiddleware, async (req, res, n
 
         res.status(200).send(neaContainers)
     } catch (e) {
-        logger.error(new Error(`Failed to return containers in specific radius: ${e}`));
+        next(new ApiError.InternalError(`Failed to return containers in specific radius: ${e}`))
     }
 });
 
@@ -66,7 +67,7 @@ router.patch('/location/:id', geocoderMiddleware, async (req, res, next) => {
 
         res.status(200).send(container)
     } catch (e) {
-        logger.error(new Error(`Failed to edit a container location: ${e}`));
+        next(new ApiError.InternalError(`Failed to edit a container location: ${e}`))
     }
 });
 
@@ -87,7 +88,7 @@ router.get('/emptying/:time', async (req, res, next) => {
 
         res.status(200).send(lastEmptyingContainers)
     } catch (e) {
-        logger.error(new Error(`Failed to return last emptying containers: ${e}`));
+        next(new ApiError.InternalError(`Failed to return last emptying containers: ${e}`))
     }
 });
 
@@ -101,7 +102,7 @@ router.patch('/emptying/:id', async (req, res, next) => {
 
         res.status(200).send()
     } catch (e) {
-        logger.error(new Error(`Failed to edit a container last emptying: ${e}`));
+        next(new ApiError.InternalError(`Failed to edit a container last emptying: ${e}`))
     }
 });
 
@@ -114,7 +115,7 @@ router.delete('/:id', async (req, res, next) => {
 
         res.status(200).send()
     } catch (e) {
-        logger.error(e);
+        next(new ApiError.InternalError(`Failed to delete a container: ${e.message}`))
     }
 });
 

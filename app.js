@@ -3,6 +3,7 @@ const cors = require('cors')
 require('dotenv').config()
 const containersRouter = require('./src/routes/containers');
 const httpLogger = require('./src/logger/httpLogger')
+const errorHandler = require("./src/error/errorHandler");
 
 function serverGenerator() {
     const app = express();
@@ -11,8 +12,7 @@ function serverGenerator() {
     app.use(express.json()); // Init json
     app.use(httpLogger); // Init http logger
     app.use('/api/v1/containers', containersRouter); // Init routes
-
-    // TODO - error handler
+    app.use(errorHandler);
 
     return app
 }

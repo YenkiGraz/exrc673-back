@@ -1,4 +1,5 @@
 const NodeGeocoder = require('node-geocoder');
+const ApiError = require("../error/ApiError");
 require('dotenv').config()
 
 const options = {
@@ -19,7 +20,7 @@ const initAddress = async (body) => {
     }
 
     if (body.location === undefined && body.address === undefined) {
-        throw new Error('{code: 400, error: "Wrong properties"}')
+        throw new ApiError.BadRequest('Wrong properties')
     }
 }
 
@@ -33,10 +34,9 @@ const getAddressByLocation = async (location) => {
 const geocoderMiddleware = async (req, res, next) => {
     try {
         await initAddress(req.body)
-        console.log(req.body);
         next()
     } catch (err) {
-        next(err)
+        next(new ApiError.InternalError(err))
     }
 }
 
